@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Farmer Direct Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-white to-emerald-100 min-h-screen flex items-center justify-center p-6">
+
+    <div class="bg-white/80 backdrop-blur-md p-10 rounded-[2.5rem] shadow-2xl w-full max-w-4xl border border-white/50 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-green-200 rounded-full blur-3xl opacity-50"></div>
+
+        <div class="text-center mb-10 relative">
+            <h1 class="text-4xl font-black text-gray-800 tracking-tight">FARMER <span class="text-green-600 italic">DIRECT</span></h1>
+            <p class="text-green-700 font-semibold mt-2">Welcome back! Please select your portal.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div onclick="showLoginForm('farmer')" id="farmer-card" class="role-card group cursor-pointer p-8 rounded-3xl border-2 border-transparent bg-gray-50 hover:bg-green-50 hover:border-green-500 transition-all duration-300 text-center">
+                <div class="bg-white w-20 h-20 rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 group-hover:rotate-6 transition">
+                    <i class="fas fa-tractor text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">ರೈತ (Farmer)</h3>
+                <p class="text-xs text-gray-500 mt-2">Login with Mobile OTP</p>
+            </div>
+
+            <div onclick="showLoginForm('customer')" id="customer-card" class="role-card group cursor-pointer p-8 rounded-3xl border-2 border-transparent bg-gray-50 hover:bg-blue-50 hover:border-blue-500 transition-all duration-300 text-center">
+                <div class="bg-white w-20 h-20 rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 group-hover:-rotate-6 transition">
+                    <i class="fas fa-user-tie text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">ಗ್ರಾಹಕ (Customer)</h3>
+                <p class="text-xs text-gray-500 mt-2">Login with Email ID</p>
+            </div>
+        </div>
+
+        <div id="login-section" class="hidden animate-fade max-w-md mx-auto">
+            <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-inner">
+                <h2 id="form-header" class="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+                
+                <div class="space-y-5">
+                    <div class="relative">
+                        <i id="input-icon" class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="user-id" placeholder="Enter details..." 
+                               class="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all font-medium">
+                    </div>
+
+                    <div id="otp-area" class="hidden space-y-4 animate-fade">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="text-sm font-bold text-gray-600">Enter Verification Code</label>
+                            <span id="timer" class="text-xs font-mono text-red-500 font-bold">00:30</span>
+                        </div>
+                        <input type="text" id="otp-box" maxlength="6" placeholder="******" 
+                               class="w-full py-4 text-center text-3xl tracking-[0.8rem] bg-white border-2 border-green-500 rounded-2xl shadow-sm focus:ring-4 focus:ring-green-500/10 outline-none">
+                        
+                        <button id="resend-btn" onclick="resendOTP()" disabled class="w-full text-sm font-bold text-gray-400 cursor-not-allowed hover:text-green-600 transition">
+                            Didn't get code? <span class="underline">Resend OTP</span>
+                        </button>
+                    </div>
+
+                    <button id="main-action-btn" onclick="triggerOTP()" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl hover:bg-black shadow-xl hover:shadow-green-500/20 transition-all active:scale-95">
+                        Get Secure OTP
+                    </button>
+                    
+                    <button id="verify-btn" onclick="finishLogin()" class="hidden w-full bg-green-600 text-white font-bold py-4 rounded-2xl hover:bg-green-700 shadow-xl transition-all active:scale-95">
+                        Verify & Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let role = '';
+        let code = '';
+        let countdown;
+
+        function showLoginForm(selectedRole) {
+            role = selectedRole;
+            const section = document.getElementById('login-section');
+            const header = document.getElementById('form-header');
+            const input = document.getElementById('user-id');
+            const icon = document.getElementById('input-icon');
+            
+            section.classList.remove('hidden');
+            document.getElementById('otp-area').classList.add('hidden');
+            document.getElementById('main-action-btn').classList.remove('hidden');
+            document.getElementById('verify-btn').classList.add('hidden');
+
+            if(role === 'farmer') {
+                header.innerHTML = "👨‍🌾 Farmer Access";
+                input.placeholder = "Enter 10-digit Mobile Number";
+                icon.className = "fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-green-500";
+            } else {
+                header.innerHTML = "🛍️ Customer Portal";
+                input.placeholder = "Enter Registered Email Address";
+                icon.className = "fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+            }
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function triggerOTP() {
+            const val = document.getElementById('user-id').value;
+            if(!val) return alert("Please fill in the field!");
+
+            code = Math.floor(100000 + Math.random() * 900000).toString();
+            alert("Verification Code: " + code);
+
+            document.getElementById('otp-area').classList.remove('hidden');
+            document.getElementById('main-action-btn').classList.add('hidden');
+            document.getElementById('verify-btn').classList.remove('hidden');
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            let timeLeft = 30;
+            const timerDisplay = document.getElementById('timer');
+            const resendBtn = document.getElementById('resend-btn');
+            
+            resendBtn.disabled = true;
+            resendBtn.classList.replace('text-green-600', 'text-gray-400');
+            resendBtn.classList.add('cursor-not-allowed');
+
+            clearInterval(countdown);
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(countdown);
+                    resendBtn.disabled = false;
+                    resendBtn.classList.replace('text-gray-400', 'text-green-600');
+                    resendBtn.classList.remove('cursor-not-allowed');
+                    timerDisplay.innerText = "Ready";
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            alert("New OTP Sent!");
+            triggerOTP();
+        }
+
+        function finishLogin() {
+            const entered = document.getElementById('otp-box').value;
+            if(entered === code) {
+                alert("✅ Verified! Welcome to the market.");
+                if (role === 'farmer') {
+    window.location.href = "/farmer-dashboard";
+} else {
+    window.location.href = "/";
+}
+            }
+        }
+    </script>
+</body>
+</html>

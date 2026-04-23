@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace | Farmer Direct</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white py-4 px-8 shadow-sm flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-2xl font-black text-green-700 tracking-tighter">FARMER<span class="text-gray-900">DIRECT</span></h1>
+        <div class="space-x-6 font-bold text-sm">
+            <a href="/login" class="text-gray-600 hover:text-green-600">Login</a>
+            <button class="bg-green-600 text-white px-5 py-2 rounded-full hover:bg-green-700 transition">Cart (0)</button>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        <div class="mb-10 text-center">
+            <h2 class="text-4xl font-black text-gray-900 mb-2">ತಾಜಾ ಉತ್ಪನ್ನಗಳು (Available Now)</h2>
+            <p class="text-gray-500 font-medium">Direct from the fields of Tiptur to your kitchen.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for crop in crops %}
+            <div class="bg-white rounded-[2.5rem] p-6 shadow-lg border border-gray-100 hover:shadow-2xl transition-all group">
+                <div class="h-40 bg-green-50 rounded-[2rem] mb-6 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform">
+                    🍃
+                </div>
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800">{{ crop[1] }}</h3>
+                        <p class="text-xs font-bold text-gray-400 uppercase">Farmer: {{ crop[3] }}</p>
+                    </div>
+                    <span class="text-2xl font-black text-green-600">₹{{ crop[2] }}</span>
+                </div>
+                <button onclick="alert('Added to cart!')" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl hover:bg-green-600 transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-shopping-basket text-sm"></i> Buy Now
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

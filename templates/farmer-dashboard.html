@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-4xl mx-auto bg-green-700 p-8 rounded-[2rem] shadow-xl text-white mb-8">
+        <h1 class="text-3xl font-black">ರೈತ ಪೋರ್ಟಲ್ (Farmer Portal)</h1>
+        <p class="opacity-80">Sell your fresh Tiptur produce directly to customers.</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-lg border border-gray-100">
+            <h2 class="text-xl font-bold mb-6 text-gray-800">Add New Item / ಹೊಸ ಐಟಂ ಸೇರಿಸಿ</h2>
+            <form action="/add-product" method="POST" class="space-y-4">
+                <input type="text" name="p-name" placeholder="Crop Name (eg: Banana)" required 
+                    class="w-full p-4 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
+                
+                <input type="number" name="p-price" placeholder="Price (₹ per KG)" required 
+                    class="w-full p-4 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-green-500">
+                
+                <button type="submit" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl hover:bg-green-800 transition shadow-lg shadow-green-100">
+                    Post to Market
+                </button>
+            </form>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-between items-center">
+                <span class="text-gray-400 font-bold uppercase text-xs tracking-widest">Active Listings</span>
+                <span class="text-3xl font-black text-green-600">1</span>
+            </div>
+            <div class="bg-white p-10 rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400">
+                <p class="text-sm font-bold">Waiting for orders...</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
